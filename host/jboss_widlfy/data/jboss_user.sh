@@ -14,7 +14,7 @@ EOF
 
 source ~/.bashrc
 
-echo "Please enter Jboss/Wildfly Admin username from:
+echo "Please enter Jboss/Wildfly Admin username used in confiuration:
 "
 read jboss_user
 
