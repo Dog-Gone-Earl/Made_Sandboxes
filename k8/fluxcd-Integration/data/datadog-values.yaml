@@ -1,0 +1,64 @@
+datadog:
+  apiKeyExistingSecret: datadog-secret
+  appKeyExistingSecret: datadog-secret
+  site: datadoghq.com
+  tags:
+
+    - env:fluxcd_sandbox
+  confd:
+      fluxcd.yaml: |-
+        ad_identifiers:
+          - notification-controller
+          - helm-controller
+          - kustomize-controller
+          - source-controller
+        init_config:
+        instances:
+          - openmetrics_endpoint: http://%%host%%:8080/metrics
+          - openmetrics_endpoint: http://%%host%%:8080/metrics
+          - openmetrics_endpoint: http://%%host%%:8080/metrics
+          - openmetrics_endpoint: http://%%host%%:8080/metrics        
+
+  # Disable kubelet TLS Verification in minikube
+  kubelet:
+    tlsVerify: false
+
+  kubeStateMetricsEnabled: false
+  kubeStateMetricsCore:
+    enabled: true
+
+  orchestratorExplorer:
+    enabled: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+  apm:
+    socketEnabled: false
+    portEnabled: true
+  processAgent:
+    enabled: true
+    processCollection: true
+
+  clusterChecks:
+    enabled: true
+
+  # These 3 integrations error by default in minikube
+  ignoreAutoConfig:
+    - etcd
+    - kube_controller_manager 
+    - kube_scheduler 
+
+agents:
+
+  ## Define the Datadog image to work with
+  image:
+    # agents.image.name -- Datadog Agent image name to use (relative to `registry`)
+
+    # agents.image.tag -- Define the Agent version to use
+    tag: 7.47.0-custom
+
+    repository: ghcr.io/dog-gone-earl/agent
+
+
+clusterAgent:
+  enabled: true

@@ -1,0 +1,46 @@
+datadog:
+  apiKeyExistingSecret: datadog-secret
+  appKeyExistingSecret: datadog-secret
+  site: datadoghq.com
+  tags:
+
+    - env:macbook
+
+  env:
+    - name: DD_LOGS_CONFIG_PROCESSING_RULES
+      value: '[{"type": "mask_sequences", "name": "authorization", "replace_placeholder": "MASKED_TOKEN", "pattern" : "Bearer[^,]*(.*)"}]'
+      value: '[{"type": "mask_sequences", "name": "CPF", "replace_placeholder": "MASKED_CPF_TOKEN", "pattern" : "<PATTERN>[^,]*(.*)"}]'
+
+
+
+  # Disable kubelet TLS Verification in minikube
+  kubelet:
+    tlsVerify: false
+
+  kubeStateMetricsEnabled: false
+  kubeStateMetricsCore:
+    enabled: true
+
+  orchestratorExplorer:
+    enabled: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+  apm:
+    socketEnabled: false
+    portEnabled: true
+  processAgent:
+    enabled: true
+    processCollection: true
+
+  clusterChecks:
+    enabled: true
+
+  # These 3 integrations error by default in minikube
+  ignoreAutoConfig:
+    - etcd
+    - kube_controller_manager 
+    - kube_scheduler 
+
+clusterAgent:
+  enabled: true
