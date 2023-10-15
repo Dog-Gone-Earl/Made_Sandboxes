@@ -68,4 +68,8 @@ while True:
 
   print(temperature, humidity, pressure)
 
+<<<<<<< HEAD
   time.sleep(.5)
+=======
+  time.sleep(.5)
+>>>>>>> ae5d487a95dd29fa1a5400d6bd1db875865614a7
