@@ -3,10 +3,11 @@
 #Configuration of Environment Variables
 user=root
 database=weather_database
-table=weather_table 
-sandbox_OS=$(uname)
-mysql_user_pw=<MYSQL PW>
-dd_pw=<AGENT PW>
+table=weather_table
+datadog_user=<Agent_USER>
+datadog_pw=<AGENT_PASSWORD>
+mysql_user=<MYSQL_USER>
+mysql_user_pw=<MYSQL_PASSWORD>
 
 # in order to cooperate with the AWS Sandbox environment, let's make sure to
 # always rely on the ~/ directory for unix systems
@@ -27,15 +28,16 @@ echo "Adding Agent Configs to dd-agent"
 echo ""
 
 sudo sed -i.yaml "s/# hostname: <HOSTNAME_NAME>/hostname: $HOSTNAME/1" /etc/datadog-agent/datadog.yaml
-sudo sed -i.yaml "s/# env: <environment name>/env: $(uname)/1" /etc/datadog-agent/datadog.yaml
+sudo sed -i.yaml "s/# env: <environment name>/env: mysql_sandbox/1" /etc/datadog-agent/datadog.yaml
 sudo sed -i.yaml "s/# use_dogstatsd: true/use_dogstatsd: true/1" /etc/datadog-agent/datadog.yaml
 sudo sed -i.yaml "s/# dogstatsd_port: 8125/dogstatsd_port: 8125/1" /etc/datadog-agent/datadog.yaml
 
 echo "Adding Configs to Mysql Yaml File"
 echo ""
 sudo cp -R "/home/vagrant/data/conf.yaml" "/etc/datadog-agent/conf.d/mysql.d/conf.yaml"
-sudo sed -i.yaml "s/    password: <PASSWORD>/    password: $dd_pw/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
-sudo sed -i.yaml "s/    # dbm: false:/    dbm: true/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i "s/    username: datadog/    username: $datadog_user/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i "s/    password: <PASSWORD>/    password: $datadog_pw/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i "s/    # dbm: false:/    dbm: true/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
 
 sudo /etc/init.d/datadog-agent stop
 
@@ -43,6 +45,7 @@ sudo /etc/init.d/datadog-agent stop
 echo "Setting environment varialbe for mysql"
 echo ""
 sudo chmod 777 /etc/environment
+sudo echo "MYSQL_USER=$mysql_user" >> /etc/environment
 sudo echo "MYSQL_PW=$mysql_user_pw" >> /etc/environment
 
 #Installing pip, Python, and datadog modules"
@@ -63,10 +66,10 @@ sleep 3
 sudo apt-get install mysql-server -y
 sudo pip3 install mysql-connector-python
 sudo mysql --user=$user --execute="CREATE DATABASE $database; USE $database; CREATE TABLE $table (temp INT(3), humidity INT(3), pressure INT(4)); "
-sudo mysql --user=$user --execute="CREATE USER 'weather_user'@'localhost' IDENTIFIED BY '$mysql_user_pw'; GRANT ALL ON *.* TO 'weather_user'@'localhost'; FLUSH PRIVILEGES;"
-sudo mysql --user=$user --execute="CREATE USER datadog@'%' IDENTIFIED WITH mysql_native_password by '$dd_pw'; ALTER USER datadog@'%' WITH MAX_USER_CONNECTIONS 5; GRANT REPLICATION CLIENT ON *.* TO datadog@'%';GRANT PROCESS ON *.* TO datadog@'%';"
-sudo mysql --user=$user --execute="GRANT SELECT ON performance_schema.* TO datadog@'%'; CREATE SCHEMA IF NOT EXISTS datadog;"
-sudo mysql --user=$user --execute="GRANT EXECUTE ON datadog.* to datadog@'%'; GRANT CREATE TEMPORARY TABLES ON datadog.* TO datadog@'%';"
+sudo mysql --user=$user --execute="CREATE USER '$mysql_user'@'localhost' IDENTIFIED BY '$mysql_user_pw'; GRANT ALL ON *.* TO '$mysql_user'@'localhost'; FLUSH PRIVILEGES;"
+sudo mysql --user=$user --execute="CREATE USER '$datadog_user'@'%' IDENTIFIED WITH mysql_native_password by '$datadog_pw'; ALTER USER $datadog_user@'%' WITH MAX_USER_CONNECTIONS 5; GRANT REPLICATION CLIENT ON *.* TO $datadog_user@'%';GRANT PROCESS ON *.* TO $datadog_user@'%';"
+sudo mysql --user=$user --execute="GRANT SELECT ON performance_schema.* TO $datadog_user@'%'; CREATE SCHEMA IF NOT EXISTS $datadog_user;"
+sudo mysql --user=$user --execute="GRANT EXECUTE ON datadog.* to datadog@'%'; GRANT CREATE TEMPORARY TABLES ON datadog.* TO $datadog_user@'%';"
 
 sudo mysql --user=$user --execute="DELIMITER $$
 CREATE PROCEDURE datadog.explain_statement(IN query TEXT)
@@ -88,12 +91,12 @@ BEGIN
 END $$
 DELIMITER ;"
 
-sudo mysql --user=$user --execute="GRANT EXECUTE ON PROCEDURE datadog.enable_events_statements_consumers TO datadog@'%';"
+sudo mysql --user=$user --execute="GRANT EXECUTE ON PROCEDURE datadog.enable_events_statements_consumers TO $datadog_user@'%';"
   
 echo "Retrieving Python file"
 echo ""
 sleep 3
 sudo cp -R "/home/vagrant/data/weather.py" "/home/vagrant"
-sudo systemctl retart datadog-agent
+sudo systemctl restart datadog-agent
 echo ""
 echo "Dogstatsd/Mysql Completed!"

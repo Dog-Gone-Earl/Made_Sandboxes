@@ -39,14 +39,13 @@ while True:
   statsd.distribution('pressure.distribution',pressure,tags=["environment:dev"])
 
   #Put Gauge data in mysql database/table
-  user_pw = os.getenv("MYSQL_PW") 
-  user_db='weather_user'
-  password= user_pw
+  mysql_user = os.getenv("MYSQL_USER") 
+  mysql_pw = os.getenv("MYSQL_PW") 
   weather_db= 'weather_database'
   
   params = {
-    'user': user_db, 
-    'password': user_pw,
+    'user': mysql_user, 
+    'password': mysql_pw,
     'database': weather_db
 }
 
@@ -69,4 +68,4 @@ while True:
 
   print(temperature, humidity, pressure)
 
-  time.sleep(10)
+  time.sleep(.5)
