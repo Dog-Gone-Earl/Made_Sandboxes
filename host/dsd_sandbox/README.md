@@ -7,7 +7,8 @@
 
 
 ### This VM will spin up a Ubuntu VM to run:
-- Python Weather App 2.0 
+- Python Weather Application to simulate collecting temperature, humidity, and pressure values
+- Mimicking raspberry pi Sense HAT functionality ([Sense HAT](https://www.raspberrypi.com/products/sense-hat/))
   - Submit Dogstatsd (Python) metrics
   - Submit Mysql and Mysql DBM metrics from Database and Dogstatsd metric inserts to database
 - Using current version Agent 7
@@ -28,7 +29,7 @@
 
 ### 3. Once sandbox is deployed, run command:
 
-<pre>python3 data/weather.py</pre>
+<pre>python3 weather.py</pre>
 <h3>Default Metrics Being Sent:</h3>
 
 - `statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])  #temperature.gauge`
@@ -36,5 +37,6 @@
 - `statsd.gauge('pressure.gauge',pressure, tags=["environment:dev"])       #pressure.gauge`
 ### Terminal output will be data being sent to Datadog thru Dogstatsd and metrics to Mysql database
 -  `(temperature, humidity, pressure)`
+-  Metrics should generate for mysql (overview dashboard), mysql database monitoring, and custom Dogstatsd metrics
 ### 4. To stop Python app:
 <pre>ctrl+c</pre>
