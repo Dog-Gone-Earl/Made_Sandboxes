@@ -12,7 +12,7 @@
   - Submit Mysql and Mysql DBM metrics from Database and Dogstatsd metric inserts to database
 - Using current version Agent 7
 
-## VM type: Linux Ubuntu (uwbbi/bionic-arm64)
+## VM type: Linux Ubuntu (hajowieland/ubuntu-jammy-arm)
 
 ## Special Instructions
 
