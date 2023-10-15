@@ -1,6 +1,7 @@
 from datadog import initialize, statsd
 import time, random, os, mysql.connector
 
+#Configuring Dogstatsd
 options = {
     'statsd_host':'127.0.0.1',
     'statsd_port':8125
@@ -15,44 +16,51 @@ while True:
   pressure = round(random.uniform(800,1100),0)
  
   #Count
-  statsd.increment('temperature.count.increment', temperature, tags=["environment:dev"])
-  statsd.decrement('temperature.count.decrement', temperature, tags=["environment:dev"])  
-  statsd.increment('humidity.count.increment', humidity, tags=["environment:dev"])
-  statsd.decrement('humidity.count.decrement', humidity, tags=["environment:dev"])  
-  statsd.increment('pressuse.count.increment', pressure, tags=["environment:dev"])
-  statsd.decrement('pressure.count.decrement', pressure, tags=["environment:dev"]) 
+  statsd.increment('temperature.count.increment',temperature,tags=["environment:dev"])
+  statsd.decrement('temperature.count.decrement',temperature,tags=["environment:dev"])  
+  statsd.increment('humidity.count.increment',humidity,tags=["environment:dev"])
+  statsd.decrement('humidity.count.decrement',humidity,tags=["environment:dev"])  
+  statsd.increment('pressuse.count.increment',pressure,tags=["environment:dev"])
+  statsd.decrement('pressure.count.decrement',pressure,tags=["environment:dev"]) 
  
   #Gauge
-  statsd.gauge('temperature.gauge', temperature,tags=["environment:dev"])
-  statsd.gauge('humidity.gauge',humidity, tags=["environment:dev"])
-  statsd.gauge('pressure.gauge',pressure, tags=["environment:dev"])
+  statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])
+  statsd.gauge('humidity.gauge',humidity,tags=["environment:dev"])
+  statsd.gauge('pressure.gauge',pressure,tags=["environment:dev"])
  
   #Histogram (.avg, .median, .count, .max, .95percentile)
-  statsd.histogram('temperature.histogram', temperature, tags=["environment:dev"])
-  statsd.histogram('humidity.histogram', humidity, tags=["environment:dev"])
-  statsd.histogram('pressure.histogram', pressure, tags=["environment:dev"])
+  statsd.histogram('temperature.histogram',temperature,tags=["environment:dev"])
+  statsd.histogram('humidity.histogram',humidity,tags=["environment:dev"])
+  statsd.histogram('pressure.histogram',pressure,tags=["environment:dev"])
   
   #Distribution (avg, count, max, min)
-  statsd.distribution('temperature.distribution', temperature, tags=["environment:dev"])
-  statsd.distribution('humidity.distribution', humidity, tags=["environment:dev"])
-  statsd.distribution('pressure.distribution', pressure, tags=["environment:dev"])
+  statsd.distribution('temperature.distribution',temperature,tags=["environment:dev"])
+  statsd.distribution('humidity.distribution',humidity,tags=["environment:dev"])
+  statsd.distribution('pressure.distribution',pressure,tags=["environment:dev"])
 
-  #Put Gauge data in mysql database
-
+  #Put Gauge data in mysql database/table
   user_pw = os.getenv("MYSQL_PW") 
+  user_db='weather_user'
+  password= user_pw
+  weather_db= 'weather_database'
+  
+  params = {
+    'user': user_db, 
+    'password': user_pw,
+    'database': weather_db
+}
 
-  cnx = mysql.connector.connect(user='weather_user', password= user_pw, database= 'weather_database')
+  cnx = mysql.connector.connect(**params)
   cursor = cnx.cursor()
+  add_weather = ("INSERT INTO weather_table " "(temp,humidity,pressure) " "VALUES ( %(temp)s, %(humi)s, %(psi)s)")
   
-  add_weather = ("INSERT INTO weather_table " "(temp,humidity,pressure) " "VALUES ( %(temp)s, %(humidity)s, %(pressure)s)")
-  
-  data_weather = {
+  weather_data = {
     'temp' : temperature,
-    'humidity' : humidity,
-    'pressure' : pressure
+    'humi' : humidity,
+    'psi' : pressure
   }
   
-  cursor.execute(add_weather, data_weather)
+  cursor.execute(add_weather, weather_data)
   weather_id = cursor.lastrowid
   
   cnx.commit()
