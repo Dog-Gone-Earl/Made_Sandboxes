@@ -1,8 +1,5 @@
 # dogstatsd_mysql_dbm
 
-
-# directory/to/your/vm
-
 ## What this VM does
 ### <h3>Dogstatsd (Python) and Mysql DBM Metrics</h3>
 - Based on Python Weather App 1.0
@@ -20,9 +17,12 @@
 ## Special Instructions
 
 - Make sure that both `api/app key` is in `~/.sandbox.conf.sh` file
-- `cd` to directory and in terminal then launch `./run.sh up`
-- Once sandbox configuration completed run `./run.sh ssh` to ssh into VM
-- ### run command:
+- `./run.sh up`
+- `./run.sh ssh`
+- ### Set the `mysql_user_pw` for your `dd_pw` parameters Mysql password and Agent password:
+
+  
+- ### Run command:
 <pre>python3 data/weather.py</pre>
 - <h3>Dogstatsd Metric Names:</h3>
 <pre>
