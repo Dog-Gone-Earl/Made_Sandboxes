@@ -40,7 +40,10 @@ while True:
   statsd.distribution('pressure.distribution', pressure, tags=["environment:dev"])
 
   #Put Gauge data in mysql database
-  cnx = mysql.connector.connect(user='weather_user', password='Datadog2023', database= 'weather_database')
+  log_data = open("/home/vagrant/data/sql_creds.txt", "a")
+  mysql_env_pw = log_data.read("/home/vagrant/data/sql_creds.txt")
+
+  cnx = mysql.connector.connect(user='weather_user', password= mysql_env_pw, database= 'weather_database')
   cursor = cnx.cursor()
   
   add_weather = ("INSERT INTO weather_table " "(temp,humidity,pressure) " "VALUES ( %(temp)s, %(humidity)s, %(pressure)s)")

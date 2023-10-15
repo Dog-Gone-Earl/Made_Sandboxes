@@ -4,6 +4,8 @@ user=root
 database=weather_database
 table=weather_table 
 sandbox_OS=$(uname)
+mysql_user_pw= <User Password>
+dd_pw= <Datadog Password>
 
 # in order to cooperate with the AWS Sandbox environment, let's make sure to
 # always rely on the ~/ directory for unix systems
@@ -32,12 +34,13 @@ sudo sed -i.yaml "s/# dogstatsd_port: 8125/dogstatsd_port: 8125/1" /etc/datadog-
 
 sudo cp -R "/home/vagrant/data/conf.yaml" "/etc/datadog-agent/conf.d/mysql.d/conf.yaml"
 
-sudo sed -i.yaml "s/    password: <PASSWORD>/    password: Datadog2023/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i.yaml "s/    password: <PASSWORD>/    password: $dd_pw/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
 sudo sed -i.yaml "s/    # dbm: false:/    dbm: true/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
 
 sudo /etc/init.d/datadog-agent stop
 sudo /etc/init.d/datadog-agent start
 
+echo $mysql_user_pw >> ~/data/sql_creds.txt
 
 echo "Installing pip and Python datadog module"
 echo ""
@@ -61,8 +64,8 @@ sleep 3
 sudo apt-get install mysql-server -y
 sudo pip3 install mysql-connector-python
 sudo mysql --user=$user --execute="CREATE DATABASE $database; USE $database; CREATE TABLE $table (temp INT(3), humidity INT(3), pressure INT(4)); "
-sudo mysql --user=$user --execute="CREATE USER 'weather_user'@'localhost' IDENTIFIED BY 'Datadog2023'; GRANT ALL ON *.* TO 'weather_user'@'localhost'; FLUSH PRIVILEGES;"
-sudo mysql --user=$user --execute="CREATE USER datadog@'%' IDENTIFIED WITH mysql_native_password by 'Datadog2023'; ALTER USER datadog@'%' WITH MAX_USER_CONNECTIONS 5; GRANT REPLICATION CLIENT ON *.* TO datadog@'%';GRANT PROCESS ON *.* TO datadog@'%';"
+sudo mysql --user=$user --execute="CREATE USER 'weather_user'@'localhost' IDENTIFIED BY $mysql_user_pw; GRANT ALL ON *.* TO 'weather_user'@'localhost'; FLUSH PRIVILEGES;"
+sudo mysql --user=$user --execute="CREATE USER datadog@'%' IDENTIFIED WITH mysql_native_password by $dd_pw; ALTER USER datadog@'%' WITH MAX_USER_CONNECTIONS 5; GRANT REPLICATION CLIENT ON *.* TO datadog@'%';GRANT PROCESS ON *.* TO datadog@'%';"
 sudo mysql --user=$user --execute="GRANT SELECT ON performance_schema.* TO datadog@'%'; CREATE SCHEMA IF NOT EXISTS datadog;"
 sudo mysql --user=$user --execute="GRANT EXECUTE ON datadog.* to datadog@'%'; GRANT CREATE TEMPORARY TABLES ON datadog.* TO datadog@'%';"
 
