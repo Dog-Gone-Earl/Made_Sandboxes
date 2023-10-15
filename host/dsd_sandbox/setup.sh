@@ -59,7 +59,7 @@ sudo -h $HOSTNAME pip3 install datadog
 python3 -m pip install --upgrade pip
 sudo -u root pip3 install datadog
 
-#mysql install
+#mysql install components
 echo "Mysql install and configuration of database"
 echo ""
 sleep 3
