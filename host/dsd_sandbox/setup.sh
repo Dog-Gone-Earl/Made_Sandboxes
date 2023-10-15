@@ -4,7 +4,7 @@
 user=root
 database=weather_database
 table=weather_table
-datadog_user=<Agent_USER>
+datadog_user=datadog
 datadog_pw=<AGENT_PASSWORD>
 mysql_user=<MYSQL_USER>
 mysql_user_pw=<MYSQL_PASSWORD>
