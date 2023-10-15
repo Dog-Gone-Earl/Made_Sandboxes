@@ -4,7 +4,7 @@
 user=root
 database=weather_database
 table=weather_table
-datadog_user=datadog
+datadog_user=<AGENT_USER>
 datadog_pw=<AGENT_PASSWORD>
 mysql_user=<MYSQL_USER>
 mysql_user_pw=<MYSQL_PASSWORD>
@@ -20,26 +20,6 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 echo "install curl if not there..."
 sudo apt-get install -y curl
-
-echo "Installing dd-agent from api_key: ${DD_API_KEY}..."
-DD_API_KEY=${DD_API_KEY} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script_agent7.sh)"
-
-echo "Adding Agent Configs to dd-agent"
-echo ""
-
-sudo sed -i.yaml "s/# hostname: <HOSTNAME_NAME>/hostname: $HOSTNAME/1" /etc/datadog-agent/datadog.yaml
-sudo sed -i.yaml "s/# env: <environment name>/env: mysql_sandbox/1" /etc/datadog-agent/datadog.yaml
-sudo sed -i.yaml "s/# use_dogstatsd: true/use_dogstatsd: true/1" /etc/datadog-agent/datadog.yaml
-sudo sed -i.yaml "s/# dogstatsd_port: 8125/dogstatsd_port: 8125/1" /etc/datadog-agent/datadog.yaml
-
-echo "Adding Configs to Mysql Yaml File"
-echo ""
-sudo cp -R "/home/vagrant/data/conf.yaml" "/etc/datadog-agent/conf.d/mysql.d/conf.yaml"
-sudo sed -i "s/    username: datadog/    username: $datadog_user/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
-sudo sed -i "s/    password: <PASSWORD>/    password: $datadog_pw/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
-sudo sed -i "s/    # dbm: false:/    dbm: true/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
-
-sudo /etc/init.d/datadog-agent stop
 
 #set environment variable for mysql password
 echo "Setting environment varialbe for mysql"
@@ -69,10 +49,10 @@ sudo mysql --user=$user --execute="CREATE DATABASE $database; USE $database; CRE
 sudo mysql --user=$user --execute="CREATE USER '$mysql_user'@'localhost' IDENTIFIED BY '$mysql_user_pw'; GRANT ALL ON *.* TO '$mysql_user'@'localhost'; FLUSH PRIVILEGES;"
 sudo mysql --user=$user --execute="CREATE USER '$datadog_user'@'%' IDENTIFIED WITH mysql_native_password by '$datadog_pw'; ALTER USER $datadog_user@'%' WITH MAX_USER_CONNECTIONS 5; GRANT REPLICATION CLIENT ON *.* TO $datadog_user@'%';GRANT PROCESS ON *.* TO $datadog_user@'%';"
 sudo mysql --user=$user --execute="GRANT SELECT ON performance_schema.* TO $datadog_user@'%'; CREATE SCHEMA IF NOT EXISTS $datadog_user;"
-sudo mysql --user=$user --execute="GRANT EXECUTE ON datadog.* to datadog@'%'; GRANT CREATE TEMPORARY TABLES ON datadog.* TO $datadog_user@'%';"
+sudo mysql --user=$user --execute="GRANT EXECUTE ON $datadog_user.* to $datadog_user@'%'; GRANT CREATE TEMPORARY TABLES ON $datadog_user.* TO $datadog_user@'%';"
 
 sudo mysql --user=$user --execute="DELIMITER $$
-CREATE PROCEDURE datadog.explain_statement(IN query TEXT)
+CREATE PROCEDURE $datadog_user.explain_statement(IN query TEXT)
     SQL SECURITY DEFINER
 BEGIN
     SET @explain := CONCAT('EXPLAIN FORMAT=json ', query);
@@ -83,7 +63,7 @@ END $$
 DELIMITER ; "
 
 sudo mysql --user=$user --execute="DELIMITER $$
-CREATE PROCEDURE datadog.enable_events_statements_consumers()
+CREATE PROCEDURE $datadog_user.enable_events_statements_consumers()
     SQL SECURITY DEFINER
 BEGIN
     UPDATE performance_schema.setup_consumers SET enabled='YES' WHERE name LIKE 'events_statements_%';
@@ -91,12 +71,33 @@ BEGIN
 END $$
 DELIMITER ;"
 
-sudo mysql --user=$user --execute="GRANT EXECUTE ON PROCEDURE datadog.enable_events_statements_consumers TO $datadog_user@'%';"
-  
+sudo mysql --user=$user --execute="GRANT EXECUTE ON PROCEDURE $datadog_user.enable_events_statements_consumers TO $datadog_user@'%';"
+
+echo "Installing dd-agent from api_key: ${DD_API_KEY}..."
+DD_API_KEY=${DD_API_KEY} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script_agent7.sh)"
+
+echo "Adding Agent Configs to dd-agent"
+echo ""
+
+sudo sed -i.yaml "s/# hostname: <HOSTNAME_NAME>/hostname: $HOSTNAME/1" /etc/datadog-agent/datadog.yaml
+sudo sed -i.yaml "s/# env: <environment name>/env: mysql_sandbox/1" /etc/datadog-agent/datadog.yaml
+sudo sed -i.yaml "s/# use_dogstatsd: true/use_dogstatsd: true/1" /etc/datadog-agent/datadog.yaml
+sudo sed -i.yaml "s/# dogstatsd_port: 8125/dogstatsd_port: 8125/1" /etc/datadog-agent/datadog.yaml
+
+echo "Adding Configs to Mysql Yaml File"
+echo ""
+sudo cp -R "/home/vagrant/data/conf.yaml" "/etc/datadog-agent/conf.d/mysql.d/conf.yaml"
+sudo sed -i "s/    username: datadog/    username: $datadog_user/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i "s/    password: <PASSWORD>/    password: $datadog_pw/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+sudo sed -i "s/    # dbm: false:/    dbm: true/1" /etc/datadog-agent/conf.d/mysql.d/conf.yaml
+
+sudo /etc/init.d/datadog-agent stop
+
 echo "Retrieving Python file"
 echo ""
 sleep 3
 sudo cp -R "/home/vagrant/data/weather.py" "/home/vagrant"
+sudo systemctl stop datadog-agent
 sudo systemctl restart datadog-agent
 echo ""
 echo "Dogstatsd/Mysql Completed!"
