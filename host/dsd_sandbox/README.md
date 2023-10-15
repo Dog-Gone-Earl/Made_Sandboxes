@@ -17,19 +17,24 @@
 ## Special Instructions
 
 - Make sure that both `api/app key` is in `~/.sandbox.conf.sh` file
-- `./run.sh up`
-- `./run.sh ssh`
-- ### Set the `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
+
+### 1. Set the `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
 
 ![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/ec0196ad-d947-4fe7-8df6-fd544acad9b2)
 
-- ### Run command:
-<pre>python3 data/weather.py</pre>
-- <h3>Dogstatsd Metric Names:</h3>
-<pre>
-  statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])  #temperature.gauge
-  statsd.gauge('humidity.gauge',humidity, tags=["environment:dev"])       #humidity.gauge
-  statsd.gauge('pressure.gauge',pressure, tags=["environment:dev"])       #pressure.gauge</pre>
-- Terminal Output will be Dogstatsd data being sent to Datadog `(temperature, humidity, pressure)`
-- ### To stop Python app:
+### 2. Run commands
+-  `./run.sh up`
+-  `./run.sh ssh`
+
+### 3. Once sandbox is deployed, run command:
+
+- ` python3 data/weather.py`
+<h3>Default Metrics Being Sent:</h3>
+
+- `statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])  #temperature.gauge`
+- `statsd.gauge('humidity.gauge',humidity, tags=["environment:dev"])       #humidity.gauge`
+- `statsd.gauge('pressure.gauge',pressure, tags=["environment:dev"])       #pressure.gauge`
+### Terminal output will be data being sent to Datadog thru Dogstatsd and metrics to Mysql database
+-  `(temperature, humidity, pressure)`
+### 4. To stop Python app:
 <pre>ctrl+c</pre>
