@@ -1,7 +1,5 @@
 from datadog import initialize, statsd
-import time
-import random
-import mysql.connector
+import time, random, os, mysql.connector
 
 options = {
     'statsd_host':'127.0.0.1',
@@ -40,10 +38,10 @@ while True:
   statsd.distribution('pressure.distribution', pressure, tags=["environment:dev"])
 
   #Put Gauge data in mysql database
-  log_data = open("/home/vagrant/data/sql_creds.txt", "a")
-  mysql_env_pw = log_data.read("/home/vagrant/data/sql_creds.txt")
 
-  cnx = mysql.connector.connect(user='weather_user', password= mysql_env_pw, database= 'weather_database')
+  user_pw = os.getenv("MYSQL_PW") 
+
+  cnx = mysql.connector.connect(user='weather_user', password= user_pw, database= 'weather_database')
   cursor = cnx.cursor()
   
   add_weather = ("INSERT INTO weather_table " "(temp,humidity,pressure) " "VALUES ( %(temp)s, %(humidity)s, %(pressure)s)")
