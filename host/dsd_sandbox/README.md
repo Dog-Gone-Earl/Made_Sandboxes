@@ -23,12 +23,12 @@
 ![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/ec0196ad-d947-4fe7-8df6-fd544acad9b2)
 
 ### 2. Run commands
--  `./run.sh up`
--  `./run.sh ssh`
+<pre>./run.sh up
+./run.sh ssh </pre>
 
 ### 3. Once sandbox is deployed, run command:
 
-- ` python3 data/weather.py`
+<pre>python3 data/weather.py</pre>
 <h3>Default Metrics Being Sent:</h3>
 
 - `statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])  #temperature.gauge`
