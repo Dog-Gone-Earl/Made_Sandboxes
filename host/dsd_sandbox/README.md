@@ -21,7 +21,7 @@
 - `./run.sh ssh`
 - ### Set the `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
 
-![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/265a452d-fa59-4309-9f33-26dc74172439)
+![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/ec0196ad-d947-4fe7-8df6-fd544acad9b2)
 
 - ### Run command:
 <pre>python3 data/weather.py</pre>
