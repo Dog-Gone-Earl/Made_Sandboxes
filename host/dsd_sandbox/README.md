@@ -19,9 +19,10 @@
 - Make sure that both `api/app key` is in `~/.sandbox.conf.sh` file
 - `./run.sh up`
 - `./run.sh ssh`
-- ### Set the `mysql_user_pw` for your `dd_pw` parameters Mysql password and Agent password:
+- ### Set the `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
 
-  
+![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/265a452d-fa59-4309-9f33-26dc74172439)
+
 - ### Run command:
 <pre>python3 data/weather.py</pre>
 - <h3>Dogstatsd Metric Names:</h3>
