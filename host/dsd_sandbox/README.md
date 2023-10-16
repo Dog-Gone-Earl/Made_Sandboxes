@@ -37,5 +37,6 @@
 ### Terminal output will be data being sent to Datadog thru Dogstatsd and metrics to Mysql database
 -  `(temperature, humidity, pressure)`
 -  Metrics should generate for mysql (overview dashboard), mysql database monitoring, and custom Dogstatsd metrics
+-  Dogstatsd metrics will generate every `.5` seconds so data at `10` second collection intervall (default) will be represetned in Datadog (~`20th` value)
 ### 4. To stop Python app:
 <pre>ctrl+c</pre>
