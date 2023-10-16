@@ -39,8 +39,7 @@
 
 - `bash ~/data/flux_setup.sh`
 
-### You will see a new repository added:
-![image](https://github.com/Dog-Gone-Earl/fluxcd_dev/assets/107069502/ec216e87-c474-4910-9e16-16f4478ca23f)
+### You will see a new fluxcd_sandbox repository added:
 
 ## 6. Clone the git repository
 
