@@ -2,8 +2,7 @@
 
 ## What this VM does
 ### <h3>Dogstatsd (Python) and Mysql DBM Metrics</h3>
-- Based on Python Weather App 1.0
-(https://datadoghq.atlassian.net/wiki/spaces/TS/pages/2789376418/Dogstatsd+Exercise+Python)<p></p>
+- Based on [Python Weather App 1.0](https://datadoghq.atlassian.net/wiki/spaces/TS/pages/2789376418/Dogstatsd+Exercise+Python)<p></p>
 
 
 ### This VM will spin up a Ubuntu VM to run:
@@ -19,7 +18,7 @@
 
 - Make sure that both `api/app key` is in `~/.sandbox.conf.sh` file
 
-### 1. Set the `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
+### 1. Configure your `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
 
 ![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/ec0196ad-d947-4fe7-8df6-fd544acad9b2)
 
