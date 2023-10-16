@@ -31,7 +31,7 @@
   --repository=fluxcd_sandbox \
   --branch=main \
   --path=clusters/my-cluster_fluxcd \
-  --personal
+  --personal \
   --private=false
 </pre>
 
