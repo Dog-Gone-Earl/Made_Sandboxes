@@ -8,8 +8,8 @@
 ### This VM will spin up a Ubuntu VM to run:
 - Python Weather Application to simulate collecting temperature, humidity, and pressure values
 - Mimicking raspberry pi Sense HAT functionality ([Sense HAT](https://www.raspberrypi.com/products/sense-hat/))
-  - Submit Dogstatsd (Python) metrics
-  - Submit Mysql and Mysql DBM metrics from Database and Dogstatsd metric inserts to database
+  - Submit Dogstatsd (Python) metrics that are also being sent to Mysql database
+  - Agent collects Mysql metrcis and Mysql DBM metrics
 - Using current version Agent 7
 
 ## VM type: Linux Ubuntu (hajowieland/ubuntu-jammy-arm)
@@ -29,7 +29,7 @@
 ### 3. Once sandbox is deployed, run command:
 
 <pre>python3 weather.py</pre>
-<h3>Default Metrics Being Sent:</h3>
+<h3>Default Gauge Metrics Being Sent (other options commented out to be tried as well):</h3>
 
 - `statsd.gauge('temperature.gauge',temperature,tags=["environment:dev"])  #temperature.gauge`
 - `statsd.gauge('humidity.gauge',humidity, tags=["environment:dev"])       #humidity.gauge`
