@@ -39,7 +39,7 @@
 
 - `bash ~/data/flux_setup.sh`
 
-### You will see a new fluxcd_sandbox repository added:
+### You will see a new `fluxcd_sandbox` repository added:
 
 ## 6. Clone the git repository
 
