@@ -57,9 +57,13 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 ###############Jboss Quickstart example#############
 #(https://github.com/jboss-developer/jboss-eap-quickstarts)
+#git clone https://github.com/jboss-developer/jboss-eap-quickstarts
 #cd /jboss-eap-quickstarts/kitchensink
-#mvn verify
-#mvn clean install jboss:deploy
+#mvn verify (in kitchensink dir)
+#mvn clean install jboss:deploy (in kitchensink dir)
+# OR
+#mvn clean install wildfly:deploy (in kitchensink dir)
+#
 
 sudo systemctl restart datadog-agent
 
