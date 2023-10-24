@@ -79,7 +79,7 @@ DD_API_KEY=${DD_API_KEY} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.a
 echo "Adding Agent Configs to dd-agent"
 echo ""
 
-sudo sed -i.yaml "s/# hostname: <HOSTNAME_NAME>/hostname: $HOSTNAME/1" /etc/datadog-agent/datadog.yaml
+sudo sed -i.yaml "s/# hostname: <HOSTNAME_NAME>/hostname: jammy_ubuntu/1" /etc/datadog-agent/datadog.yaml
 sudo sed -i.yaml "s/# env: <environment name>/env: mysql_sandbox/1" /etc/datadog-agent/datadog.yaml
 sudo sed -i.yaml "s/# use_dogstatsd: true/use_dogstatsd: true/1" /etc/datadog-agent/datadog.yaml
 sudo sed -i.yaml "s/# dogstatsd_port: 8125/dogstatsd_port: 8125/1" /etc/datadog-agent/datadog.yaml
@@ -98,6 +98,8 @@ echo ""
 sleep 3
 sudo cp -R "/home/vagrant/data/weather.py" "/home/vagrant"
 sudo systemctl stop datadog-agent
+sudo systemctl restart datadog-agent
+sleep 10
 sudo systemctl restart datadog-agent
 echo ""
 echo "Dogstatsd/Mysql Completed!"
