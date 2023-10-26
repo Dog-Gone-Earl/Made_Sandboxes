@@ -1,4 +1,4 @@
-# dogstatsd_mysql_dbm
+# Mysql DBM and Dogstatsd
 
 ## What this VM does
 ### <h3>Dogstatsd (Python) and Mysql DBM Metrics</h3>
