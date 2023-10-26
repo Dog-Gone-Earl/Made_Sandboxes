@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #Configuration of Environment Variables
-user=root
 database=weather_database
 table=weather_table
+user=<ROOT_USER>
 datadog_user=<AGENT_USER>
 datadog_pw=<AGENT_PASSWORD>
 mysql_user=<MYSQL_USER>
