@@ -18,15 +18,24 @@
 
 - Make sure that both `api/app key` is in `~/.sandbox.conf.sh` file
 
-### 1. Configure your `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
+### 1. Configure your `user` parameter in `setup.sh` file to `root`:
+<pre>user=root</pre>
 
-![image](https://github.com/Dog-Gone-Earl/Made_Sandboxes/assets/107069502/ec0196ad-d947-4fe7-8df6-fd544acad9b2)
+### 2. Configure your `datadog_user`,`datadog_pw`, `mysql_user`, and `mysql_user_pw` parameters in `setup.sh` file:
 
-### 2. Run commands
+`datadog_user=<AGENT_USER>`
+
+`datadog_pw=<AGENT_PASSWORD>`
+
+`mysql_user=<MYSQL_USER>`
+
+`mysql_user_pw=<MYSQL_PASSWORD>`
+
+### 3. Run commands
 <pre>./run.sh up
 ./run.sh ssh </pre>
 
-### 3. Once sandbox is deployed, run command:
+### 4. Once sandbox is deployed, run command:
 
 <pre>python3 weather.py</pre>
 <h3>Default Gauge Metrics Being Sent (other options commented out to be tried as well):</h3>
@@ -38,5 +47,5 @@
 -  `(temperature, humidity, pressure)`
 -  Metrics should generate for mysql (overview dashboard), mysql database monitoring, and custom Dogstatsd metrics
 -  Python metrics will generate every `.5` seconds so data at `10` second collection intervall (Dogstatsd default) will be represetned in Datadog (`~20th` value)
-### 4. To stop Python app:
+### 5. To stop Python app:
 <pre>ctrl+c</pre>
