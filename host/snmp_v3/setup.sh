@@ -25,38 +25,29 @@ sudo cp /usr/bin/net-snmp-create-v3-user ~/
 
 sudo sed -ie '/prefix=/adatarootdir=${prefix}\/share' /usr/bin/net-snmp-create-v3-user
 
-sudo net-snmp-create-v3-user -ro -A STrP@SSWRD -a SHA -X STr0ngP@SSWRD -x AES snmpadmin
+sudo net-snmp-create-v3-user -ro -A datadog2023 -a SHA -X ddsnmp2023 -x AES snmpadmin
+
+#sudo ufw allow from 192.168.99.152 to any port 161 proto udp comment "Allow SNMP Scan from Monitoring Server"
+sudo ufw allow from 127.0.0.1 to any port 161 proto udp comment "Allow SNMP Scan from Monitoring Server"
+
 
 sudo systemctl start snmpd
 sudo systemctl enable snmpd
 
-#run commands:
+#verification commands:
 #netstat -nlpu|grep snmp -v 'will display snmp walk output'
-# snmpwalk -v3 -a SHA -A STrP@SSWRD -x AES -X STr0ngP@SSWRD -l authPriv -u snmpadmin <127.ip_address>
+#snmpwalk -v 3 -a SHA -A datadog2023 -x AES -X ddsnmp2023 -l authPriv -u snmpadmin localhost:161
+#sudo datadog-agent snmp walk localhost:161 1.3 -v 3 -a SHA -A datadog2023 -x AES -X ddsnmp2023 -l authPriv -u snmpadmin  
 
-#username: snmpadmin
-#password: {SHA: "STrP@SSWRD"} {AES: "STr0ngP@SSWRD"}
+#auth-protocol string=SHA
+#auth-key string=datadog2023
+#priv-proto string=AES
+#priv-key string=ddsnmp2023
+#security-level string=authPriv
+#user: snmpadmin
 
+#passwords: {SHA: "datadog2023"} {AES: "ddsnmp2023"}
 
 sudo cp /home/vagrant/data/conf.yaml /etc/datadog-agent/conf.d/snmp.d/
 
-"""
-init_config:
-    loader: core
-    use_device_id_as_hostname: true
-instances:
-  -
-    ip_address: localhost
-    snmp_version: 3
-    loader: core
-    use_device_id_as_hostname: true
-    user: snmpadmin
-    authProtocol: 'SHA256'
-    authKey: 'STrP@SSWRD'
-    privProtocol: 'AES256'
-    privKey: 'STr0ngP@SSWRD'
-    tags:
-      - env:sandbox 
-"""
 sudo systemctl restart datadog-agent 
-#ufw allow from 192.168.99.152 to any port 161 proto udp comment "Allow SNMP Scan from Monitoring Server"
